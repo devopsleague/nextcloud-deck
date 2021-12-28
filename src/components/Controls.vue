@@ -271,6 +271,8 @@ export default {
 			if (current?.id !== previous?.id) {
 				this.clearFilter()
 			}
+
+			document.title = this.board.title
 		},
 	},
 	methods: {
