@@ -27,8 +27,11 @@ declare(strict_types=1);
 namespace OCA\Deck\Service;
 
 use OCA\Circles\CirclesManager;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCP\App\IAppManager;
+use Throwable;
 
 /**
  * Wrapper around circles app API since it is not in a public namespace so we need to make sure that
@@ -69,5 +72,29 @@ class CirclesService {
 		} catch (\Exception $e) {
 		}
 		return false;
+	}
+
+	/**
+	 * @param string $userId
+	 * @return string[] circle single ids
+	 */
+	public function getUserCircles(string $userId): array {
+		if (!$this->circlesEnabled) {
+			return [];
+		}
+
+		try {
+			/** @var CirclesManager $circlesManager */
+			$circlesManager = \OC::$server->get(CirclesManager::class);
+			$federatedUser = $circlesManager->getFederatedUser($userId, Member::TYPE_USER);
+			$circlesManager->startSession($federatedUser);
+			$probe = new CircleProbe();
+			$probe->mustBeMember();
+			return array_map(function (Circle $circle) {
+				return $circle->getSingleId();
+			}, $circlesManager->getCircles($probe));
+		} catch (Throwable $e) {
+		}
+		return [];
 	}
 }

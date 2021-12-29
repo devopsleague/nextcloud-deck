@@ -265,7 +265,7 @@ class CardMapper extends QBMapper implements IPermissionMapper {
 
 	public function findOverdue() {
 		$qb = $this->db->getQueryBuilder();
-		$qb->select('id','title','duedate','notified')
+		$qb->select('id', 'title', 'duedate', 'notified')
 			->from('deck_cards')
 			->where($qb->expr()->lt('duedate', $qb->createFunction('NOW()')))
 			->andWhere($qb->expr()->eq('notified', $qb->createNamedParameter(false, IQueryBuilder::PARAM_BOOL)))
