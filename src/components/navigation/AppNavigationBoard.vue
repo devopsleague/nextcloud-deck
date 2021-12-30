@@ -272,9 +272,7 @@ export default {
 							.then(() => {
 								this.loading = false
 								this.deleted = true
-								this.undoTimeoutHandle = setTimeout(() => {
-									this.$store.dispatch('removeBoard', this.board)
-								}, 7000)
+								this.$store.dispatch('removeBoard', this.board)
 							})
 					}
 				},
